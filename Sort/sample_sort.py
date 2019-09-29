@@ -50,6 +50,34 @@ def hype_bubble_sort(origin_list, cmp = lambda x, y: x < y):
     return ans_list
 
 
+# 快速排序
+def quick_sort(origin_list, cmpp = lambda x, y: x < y):
+    ans_list = origin_list[:]
+    ans_list = list(ans_list)
+
+    def sub_quick(ans_list, l, r, cmp):
+        if l >= r:
+            return
+        left, right = l, r
+        base = ans_list[l]
+        while l < r:
+            while base < ans_list[r] and l < r:
+                r -= 1
+            if l < r:
+                ans_list[l] = ans_list[r]
+            while base >= ans_list[l] and l < r:
+                l += 1
+            if l < r:
+                ans_list[r] = ans_list[l]
+
+        ans_list[l] = base
+        sub_quick(ans_list, left, l - 1, cmp)
+        sub_quick(ans_list, l + 1, right, cmp)
+
+    sub_quick(ans_list, 0, len(ans_list) - 1, cmpp)
+    return ans_list
+
+
 class TimeTestThread(Thread):
 
     def __init__(self, sort_func, *args):
@@ -58,26 +86,53 @@ class TimeTestThread(Thread):
         self._args = args
 
     def run(self):
-        print(self._sort_func(self._args))
+        print(self._sort_func, self._sort_func(self._args))
+
+    def __str__(self):
+        return str(self._sort_func)
 
 
 def time_test():
-    test_list = [randint(-100000, 100000) for _ in range(100)]
-    func_name = [select_sort, sample_bubble_sort, hype_bubble_sort]
+    test_list = [randint(-100000, 100000) for _ in range(10000)]
+    func_name = [select_sort, sample_bubble_sort, hype_bubble_sort, quick_sort]
     threads = []
-    times = []
-    for i in range(3):
+    for i in range(4):
         t = TimeTestThread(func_name[i], *test_list)
         threads.append(t)
         t.start()
-    for i in range(3):
-        start = time()
-        threads[i].join()
-        end = time()
-        times.append(end - start)
-    for t in times:
-        print(t, end=' ')
+
+
+def qquick_sort(alist, start, end):
+    if start >= end:
+        # 退出递归
+        return
+    pivot = alist[start]
+    right = end
+    left = start
+
+    # 控制right -= 1不满足条件交换
+    while left < right:
+        while left < right and alist[right] > pivot:
+            right -= 1
+
+        # 交换
+        alist[left] = alist[right]
+
+        # 控制 left += 1 , 不满足条件交换
+        while left < right and alist[left] <= pivot:
+            left += 1
+        alist[right] = alist[left]
+
+    # 退出循环 left = right
+    # left 或者 right 对应的位置 赋值为基准值
+    alist[left] = pivot
+
+    # 递归自己调用自己
+    qquick_sort(alist, start, left - 1)  # 对左边排序
+    qquick_sort(alist, left + 1, end)  # 对右边排序
 
 
 if __name__ == '__main__':
-    time_test()
+    # time_test()
+    p = [randint(1, 1000) for _ in range(100)]
+    print(p)
