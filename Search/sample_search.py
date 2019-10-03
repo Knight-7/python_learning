@@ -1,6 +1,6 @@
 from random import randint
 
-import Sort.sample_sort as sort
+
 
 
 def seq_seach(items, key):
@@ -27,7 +27,3 @@ def bin_search(items, key):
 
 if __name__ == '__main__':
     p = [randint(0, 1000) for _ in range(500)]
-    sort.sec_quick_sort(p, 0, len(p) - 1)
-    print(bin_search(p, 34))
-    print(p[bin_search(p, 34)])
-    print(p)
