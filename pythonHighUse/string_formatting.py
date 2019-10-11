@@ -55,7 +55,6 @@ def thir_formatting():
     print(str3)
 
 
-
 if __name__ == '__main__':
     fir_formatting()
     sec_formatting()
