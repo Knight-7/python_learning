@@ -1,9 +1,8 @@
 from random import randint
 
 
-from Sort.mergesort import merge_sort
+from sort.mergesort import merge_sort
 from Sort.quicksort import quick_sort
-from Sort.bubblesort import hype_bubble_sort, sample_bubble_sort
 from Sort.selectsort import select_sort
 
 
