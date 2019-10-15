@@ -30,6 +30,6 @@ def _partition(items, start, end, cmp):
 
 
 if __name__ == '__main__':
-    p = [28, 38, 10, 92, 19, 8, 35]
+    p = [randint(1, 100) for _ in range(7)]
     print(p)
     print(quick_sort(p))

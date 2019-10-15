@@ -23,4 +23,5 @@ def merge(item1, item2, cmp):
 
 
 if __name__ == '__main__':
-    pass
+    p = [1, 34, 8, 2, 76, 67, 21]
+    print(merge_sort(p))
