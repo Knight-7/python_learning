@@ -34,7 +34,7 @@ class Account(object):
             new_balance = self.balance + money
             sleep(0.001)
             self.balance = new_balance
-            self.condition.notify_all()
+            self.condition.notify_all() # 每存一次钱，都去唤醒一次被阻塞的线程
 
 
 def add_money(account):

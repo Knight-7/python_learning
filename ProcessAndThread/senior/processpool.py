@@ -32,6 +32,8 @@ def is_prime(n):
     """判断素数"""
     if n <= 1:
         return False
+    if n == 2 or n == 3:
+        return True
     if n % 2 == 0 or n % 3 == 0:
         return False
     if n % 6 != 1 and n % 6 != 5:
