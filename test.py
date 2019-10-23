@@ -11,17 +11,6 @@ HEADERS = {
     }
 
 
-def get_str(sentence):
-    p = 0
-    start = 0
-    for s in sentence:
-        if s != '\n' and s != ' ' and start == 0:
-            start = p
-        if start != 0 and s == '\n':
-            return sentence[start: p + 1]
-        p += 1
-
-
 def main():
     url = 'http://www.xbiquge.la/13/13959/20185420.html'
     response = requests.get(url, headers=HEADERS)
@@ -30,13 +19,12 @@ def main():
     html_text = soup.prettify()
     pattern = re.compile('<br/>(.*?)<br/>|"content">(.*?)<br/>', re.S)
     results = pattern.findall(html_text)
-    novel = get_str(results[0][1])
+    novel = results[0][1].strip() + '\n'
     for result in results[1:-2]:
-        novel += get_str(result[0])
+        novel += result[0].strip() + '\n'
     return novel
 
 
 if __name__ == '__main__':
-    path = '/home/knight/课程文件/Python/爬虫/圣墟/'
-    with open(path + '123' + '.txt', 'a') as f:
-        f.write(main())
+    print(main())
+    'http://www.xbiquge.la/7/7931/'

@@ -26,17 +26,6 @@ def get_novel_title(book_url):
             }
 
 
-def get_str(sentence):
-    p = 0
-    start = 0
-    for s in sentence:
-        if s != '\n' and s != ' ' and start == 0:
-            start = p
-        if start != 0 and s == '\n':
-            return sentence[start: p + 1]
-        p += 1
-
-
 def get_novel_text(url):
     response = requests.get(url, headers=HEADERS)
     response.encoding = 'utf8'
@@ -44,29 +33,39 @@ def get_novel_text(url):
     html_text = soup.prettify()
     pattern = re.compile('<br/>(.*?)<br/>|"content">(.*?)<br/>', re.S)
     results = pattern.findall(html_text)
-    novel = get_str(results[0][1])
+    novel = results[0][1].strip() + '\n'
     for result in results[1:-2]:
-        novel += get_str(result[0])
+        novel += result[0].strip() + '\n'
     return novel
 
 
-def write_to_local(title, content):
-    path_file = '/home/knight/课程文件/Python/爬虫/圣墟/'
-    with open(path_file + title + '.txt', 'a') as f:
-        f.write(content)
+def write_to_local(chapter_title, content, novel_path):
+    try:
+        chapter_path = os.path.join(novel_path, chapter_title)
+        with open(chapter_path + '.txt', 'a', encoding='utf8') as f:
+            f.write(content)
+    except FileNotFoundError:
+        print('目录不存在')
+    except FileExistsError:
+        print('目录已经存在')
 
 
-def main():
-    base_url = 'http://www.xbiquge.la/13/13959'
+def main(base_url, path):
     get_novel_title(base_url)
     for item in get_novel_title(base_url):
         print(f'正在下载----{item["title"]}')
         novel = get_novel_text(item['link'])
-        write_to_local(item['title'], novel)
+        write_to_local(item['title'], novel, path)
         sleep(0.2)
 
 
 if __name__ == '__main__':
-    path = '/home/knight/课程文件/Python/爬虫'
-    os.mkdir(path + '/圣墟')
-    main()
+    try:
+        title, url, path = input('请依次输入要爬虫的小说的名称、网址和保存地址：').split()
+        novel_path = os.path.join(path, title)
+        os.mkdir(novel_path)
+        main(url, novel_path)
+    except FileNotFoundError:
+        print('目录不存在')
+    except FileExistsError:
+        print('目录已经存在了')
