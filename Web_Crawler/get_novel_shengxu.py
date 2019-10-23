@@ -4,7 +4,7 @@ import os
 
 from time import sleep
 from bs4 import BeautifulSoup
-from urllib.request import urljoin
+from urllib.parse import urljoin
 
 HEADERS = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) '
@@ -51,7 +51,6 @@ def write_to_local(chapter_title, content, novel_path):
 
 
 def main(base_url, path):
-    get_novel_title(base_url)
     for item in get_novel_title(base_url):
         print(f'正在下载----{item["title"]}')
         novel = get_novel_text(item['link'])
