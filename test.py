@@ -1,6 +1,7 @@
 import re
 import requests
 import os
+import json
 
 from bs4 import BeautifulSoup
 
@@ -12,19 +13,21 @@ HEADERS = {
 
 
 def main():
-    url = 'http://www.xbiquge.la/13/13959/20185420.html'
+    url = 'http://www.xbiquge.la/15/15409/'
     response = requests.get(url, headers=HEADERS)
     response.encoding = 'utf8'
-    soup = BeautifulSoup(response.text, 'lxml')
-    html_text = soup.prettify()
-    pattern = re.compile('<br/>(.*?)<br/>|"content">(.*?)<br/>', re.S)
-    results = pattern.findall(html_text)
-    novel = results[0][1].strip() + '\n'
-    for result in results[1:-2]:
-        novel += result[0].strip() + '\n'
-    return novel
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'lxml')
+        box_con = soup.find(class_='box_con')
+        ps = box_con.find_all('p')
+        inf = []
+        for i in range(len(ps)):
+            if i == 0 or i == 2 or i == 5:
+                inf.append(ps[i].string)
+            elif i == 3:
+                inf.append({'title': ps[i].a.string, 'link': ps[i].a['href']})
+        return inf
 
 
 if __name__ == '__main__':
-    print(main())
-    'http://www.xbiquge.la/7/7931/'
+    main()
