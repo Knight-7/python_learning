@@ -4,8 +4,8 @@ import pymysql
 class MysqlConeect():
     """自定义一个连接MySql的类"""
 
-    def __init__(self, database, host='localhost', port=3306,
-                 charset='utf8', user='root', password='123456',
+    def __init__(self, database, host='47.102.223.103', port=3306,
+                 charset='utf8', user='root', password='aliyun',
                  is_close_auto=True):
         self._host = host
         self._port = port
@@ -20,12 +20,12 @@ class MysqlConeect():
 
     def connect_to_mysql(self):
         self._connect = pymysql.connect(
-            host = self._host,
-            port = self._port,
-            database = self._database,
-            user = self._user,
-            password = self._password,
-            charset = self._charset
+            host=self._host,
+            port=self._port,
+            database=self._database,
+            user=self._user,
+            password=self._password,
+            charset=self._charset
         )
         if self._connect:
             self._cursor = self.connect.cursor()
@@ -33,6 +33,10 @@ class MysqlConeect():
     @property
     def connect(self):
         return self._connect
+
+    @property
+    def connect_and_cursor(self):
+        return self._connect, self._cursor
 
     def creat_table(self, table):
         pass
@@ -42,14 +46,19 @@ class MysqlConeect():
 
     def __del__(self):
         if self._is_close_auto:
-            if self._connect:
-                self._connect.close()
             if self._cursor:
                 self._cursor.close()
+            if self._connect:
+                self._connect.close()
 
 
 def main():
-    con1 = MysqlConeect('python_use')
+    mysql = MysqlConeect('course_design')
+    con, cur = mysql.connect_and_cursor
+    sql = 'show tables;'
+    cur.execute(sql)
+    res = cur.fetchall()
+    print(res)
 
 
 if __name__ == '__main__':
