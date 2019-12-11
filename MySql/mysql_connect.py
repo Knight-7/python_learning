@@ -1,32 +1,22 @@
 import pymysql
+import json
+import os
 
 
-class MysqlConeect():
+class MysqlConnect:
     """自定义一个连接MySql的类"""
 
-    def __init__(self, database, host='47.102.223.103', port=3306,
-                 charset='utf8', user='root', password='aliyun',
-                 is_close_auto=True):
-        self._host = host
-        self._port = port
+    def __init__(self, database, is_close_auto=True):
         self._database = database
-        self._charset = charset
-        self._user = user
-        self._password = password
         self._connect = None
         self._cursor = None
         self._is_close_auto = is_close_auto
         self.connect_to_mysql()
 
     def connect_to_mysql(self):
-        self._connect = pymysql.connect(
-            host=self._host,
-            port=self._port,
-            database=self._database,
-            user=self._user,
-            password=self._password,
-            charset=self._charset
-        )
+        with open(os.path.dirname(os.path.abspath(__file__)) + '\\config.json', 'r') as f:
+            config = json.load(f)
+        self._connect = pymysql.connect(database=self._database, **config)
         if self._connect:
             self._cursor = self.connect.cursor()
 
@@ -47,19 +37,12 @@ class MysqlConeect():
     def __del__(self):
         if self._is_close_auto:
             if self._cursor:
+                print('cursor close')
                 self._cursor.close()
             if self._connect:
+                print('connect close')
                 self._connect.close()
 
 
-def main():
-    mysql = MysqlConeect('course_design')
-    con, cur = mysql.connect_and_cursor
-    sql = 'show tables;'
-    cur.execute(sql)
-    res = cur.fetchall()
-    print(res)
-
-
 if __name__ == '__main__':
-    main()
+    mysql = MysqlConnect('course_design')
