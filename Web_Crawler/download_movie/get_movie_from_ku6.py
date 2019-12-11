@@ -1,15 +1,22 @@
 import requests
 import time
+import sys
 
 from threading import Thread
 
 
 def print_process(p_size, size, content_size, chunk_size):
-    print('已经下载了：', end='')
-    print(int(size / content_size * 100) * '█', end='')
-    print(f'【{round(size / chunk_size ** 2, 2)}MB】', end='')
-    print(f'【{round(float(size / content_size) * 100, 2)}%】', end='')
-    print(f'速度:{round(float((size - p_size) / chunk_size ** 2), 2)}MB/s')
+    block_num = int(int(size / content_size * 100) * 0.8)
+    blank_num = 80 - block_num
+    persent = round(float((size / content_size) * 100), 2)
+    speed = round(float((size - p_size) / chunk_size ** 2), 2)
+    process_bar = '█' * block_num + ' ' * blank_num + f' {persent}%, {speed}MB/s' + '\r'
+    sys.stdout.write(process_bar)
+    sys.stdout.flush()
+    if int(persent) == 100:
+        sys.stdout.write(process_bar)
+        sys.stdout.flush()
+        print()
 
 
 def get_vedio():
